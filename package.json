@@ -1,0 +1,22 @@
+{
+	"name": "testAuthConnect",
+	"version": "0.0.1",
+	"description": "Testing the library to authenticate to Feide Connect",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"oauth",
+		"feide",
+		"authentication",
+		"groups",
+		"authorizations"
+	],
+	"author": "Andreas Åkre Solberg",
+	"license": "BSD-2-Clause",
+	"dependencies": {
+		"express": "3.x",
+		"request": "~ 2.27.0"
+	}
+}
