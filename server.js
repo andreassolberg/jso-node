@@ -3,8 +3,9 @@ var
   // , passport = require('passport')
   // , po2 = require('passport-oauth2')
   // , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
-    OAuth = require('./lib/jso').OAuth
-  , express = require('express')
+    OAuth = require('./lib/jso').OAuth,
+    FeideConnect = require('./lib/FeideConnect').FeideConnect,
+	express = require('express')
   ;
 
 
@@ -14,7 +15,7 @@ var
 
 
 
-var o = new OAuth({
+var o_old = new OAuth({
 
 	client_id: "c74e2395-3712-4c53-b488-e0108af48952",
 	client_secret: "bde08ff3-eee2-4369-9e6b-5e17e2579793",
@@ -32,16 +33,32 @@ var o = new OAuth({
 });
 
 
+var o = new FeideConnect({
+
+	client_id: "c74e2395-3712-4c53-b488-e0108af48952",
+	client_secret: "bde08ff3-eee2-4369-9e6b-5e17e2579793",
+	redirect_uri: "http://0.0.0.0:3000/callback",
+
+	scopes: { 
+		request: ["userinfo"]
+	}
+
+});
+
+
 // var scopes = {
 // 	request: ["https://www.googleapis.com/auth/userinfo.email"],
 // 	require: ["https://www.googleapis.com/auth/userinfo.email"]
 // };
 
 
-app.use('/callback', o.getMiddleware().callback() );
+app.use('/callback', o.getAuthenticationMiddleware().callback() );
 
-app.use('/', o.getMiddleware() );
-app.use('/test', o.getMiddleware().requireScopes(['userinfo']));
+app.use('/', o.getAuthenticationMiddleware() );
+app.use('/test', o.getAuthenticationMiddleware()
+	.requireScopes(['userinfo'])
+	.authenticate()
+);
 
 
 app.get('/test', function(req, res){
