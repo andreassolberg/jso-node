@@ -1,10 +1,12 @@
 
+
+
 var 
   // , passport = require('passport')
   // , po2 = require('passport-oauth2')
   // , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
     OAuth = require('./lib/jso').OAuth,
-    FeideConnect = require('./lib/FeideConnect').FeideConnect,
+    Facebook = require('./lib/Facebook').Facebook,
 	express = require('express')
   ;
 
@@ -33,14 +35,14 @@ var
 // });
 
 
-var o = new FeideConnect({
+var o = new Facebook({
 
-	client_id: "c74e2395-3712-4c53-b488-e0108af48952",
-	client_secret: "bde08ff3-eee2-4369-9e6b-5e17e2579793",
-	redirect_uri: "http://0.0.0.0:3000/callback",
+	client_id: "262740470541011",
+	client_secret: "ecfe8eb8272306aa96ca1f22b23a03f2",
+	redirect_uri: "http://localhost:3000/callback",
 
 	scopes: { 
-		request: ["userinfo"]
+		request: ["user_about_me"]
 	}
 
 });
@@ -50,14 +52,15 @@ var sessionConfig = {
 	// path: '/', 
 	// httpOnly: true, 
 	// maxAge: null,
-	"secret": "slksdf89sd8ftsdjhfgsduytf",
+	"key": "sess",
+	"secret": "slksdfsdfkjhsdf9duytf",
 	"store": store,
-	"cookie": { 
-		path: '/', 
-		httpOnly: true, 
-		maxAge: 1000*24*60*60*1000 // , // 10000 days.
-		// secure: true
-	}
+	// "cookie": { 
+	// 	path: '/', 
+	// 	httpOnly: true, 
+	// 	maxAge: 1000*24*60*60*1000 // , // 10000 days.
+	// 	// secure: true
+	// }
 };
 app.use(express.cookieParser());
 app.use(express.session(sessionConfig));
@@ -69,7 +72,7 @@ app.use('/test', o.getAuthenticationMiddleware()
 	.requireScopes(['userinfo'])
 
 );
-app.use('/', o.getAuthenticationMiddleware());
+// app.use('/', o.getAuthenticationMiddleware());
 app.use(app.router);
 
 
@@ -84,6 +87,8 @@ app.get('/dump', function(req, res){
 		body += "Session object: " + JSON.stringify(req.session, undefined, 4);	
 	}
 
+	if (!req.session.c) req.session.c = 0;
+	req.session.c++;
 
 	var token = o.getAuthenticationMiddleware().checkToken(req);
 
@@ -121,8 +126,19 @@ app.get('/test', function(req, res){
 
 	var redirectHandler = o.getRedirectHandler(req, res);
 
-	if (req._oauth && req._oauth.token) {
-		body += 'Oauth token expires ' + req._oauth.token.dfg();
+	if (req._oauth) {
+		body += "OAuth object: " + JSON.stringify(req._oauth, undefined, 4);	
+	}
+	if (req.session) {
+		body += "Session object: " + JSON.stringify(req.session, undefined, 4);	
+	}
+
+	var token = o.getAuthenticationMiddleware().checkToken(req);
+
+	console.log("GOT TOKEN", token, req.session._oauth);
+
+	if (token) {
+		body += 'Oauth token expires ' + token.getExpiresIn() + "\nToken" + JSON.stringify(token, undefined, 4);	
 	}
 
 	// OAuth.prototype.getJSON = function(url, options, callback, redirectCallback
