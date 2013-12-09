@@ -49,9 +49,6 @@ var o = new Facebook({
 
 
 var sessionConfig = { 
-	// path: '/', 
-	// httpOnly: true, 
-	// maxAge: null,
 	"key": "sess",
 	"secret": "slksdfsdfkjhsdf9duytf",
 	"store": store,
@@ -65,43 +62,38 @@ var sessionConfig = {
 app.use(express.cookieParser());
 app.use(express.session(sessionConfig));
 
-app.use('/callback', o.getAuthenticationMiddleware().callback().authenticate() );
-
-// app.use('/', o.getAuthenticationMiddleware() );
-app.use('/test', o.getAuthenticationMiddleware()
+app.use('/callback', o.getMiddleware().callback().authenticate() );
+app.use('/test', o.getMiddleware()
 	.requireScopes(['userinfo'])
-
 );
-// app.use('/', o.getAuthenticationMiddleware());
+app.use('/', o.getMiddleware() );
 app.use(app.router);
 
 
 
 app.get('/dump', function(req, res){
-	var body = 'Test OAuth. Got data: ';
+	
 
-	if (req._oauth) {
-		body += "OAuth object: " + JSON.stringify(req._oauth, undefined, 4);	
-	}
-	if (req.session) {
-		body += "Session object: " + JSON.stringify(req.session, undefined, 4);	
-	}
+	var token = o.getMiddleware().checkToken(req);
+	var body = 'Dump status.';
+
+	console.log("GOT TOKEN");
+	console.log(token);
 
 	if (!req.session.c) req.session.c = 0;
 	req.session.c++;
 
-	var token = o.getAuthenticationMiddleware().checkToken(req);
-
-	console.log("GOT TOKEN", token, req.session._oauth);
-
+	if (req._oauth) {
+		body += "\n\n-----\nOAuth object: " + JSON.stringify(req._oauth, undefined, 4);	
+	}
+	if (req.session) {
+		body += "\n\n-----\nSession object: " + JSON.stringify(req.session, undefined, 4);	
+	}
 	if (token) {
-		body += 'Oauth token expires ' + token.getExpiresIn() + "\nToken" + JSON.stringify(token, undefined, 4);	
+		body += '\n\n-----\nOauth token expires ' + token.getExpiresIn() + "\nToken" + JSON.stringify(token, undefined, 4);	
 	}
 
-    if(typeof req.cookies['connect.sid'] !== 'undefined'){
-        console.log(req.cookies['connect.sid']);
-        body += JSON.stringify("Session cookie " + req.cookies['connect.sid'], undefined, 4);	
-    }
+
 
 	var redirectHandler = o.getRedirectHandler(req, res);
 
@@ -133,7 +125,7 @@ app.get('/test', function(req, res){
 		body += "Session object: " + JSON.stringify(req.session, undefined, 4);	
 	}
 
-	var token = o.getAuthenticationMiddleware().checkToken(req);
+	var token = o.getMiddleware().checkToken(req);
 
 	console.log("GOT TOKEN", token, req.session._oauth);
 
@@ -167,10 +159,10 @@ app.get('/test', function(req, res){
 
 
 app.get('/hello.txt', function(req, res){
-  var body = 'Hello World';
-  res.setHeader('Content-Type', 'text/plain');
-  res.setHeader('Content-Length', body.length);
-  res.end(body);
+	var body = 'Hello World';
+	res.setHeader('Content-Type', 'text/plain');
+	res.setHeader('Content-Length', body.length);
+	res.end(body);
 });
 
 
