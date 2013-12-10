@@ -1,7 +1,11 @@
 {
 	"name": "testAuthConnect",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "Testing the library to authenticate to Feide Connect",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/andreassolberg/jso-node.git"
+	},
 	"main": "server.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -16,7 +20,10 @@
 	"author": "Andreas Åkre Solberg",
 	"license": "BSD-2-Clause",
 	"dependencies": {
-		"express": "3.x",
-		"request": "~ 2.27.0"
+		"express": ">= 3.x",
+		"request": "*"
+	},
+	"dependencies-dev": {
+		"mongojs": "*"
 	}
 }

@@ -5,7 +5,8 @@ var
     OAuth = require('./lib/jso').OAuth,
     Facebook = require('./lib/Facebook').Facebook,
     FeideConnect = require('./lib/FeideConnect').FeideConnect,
-	express = require('express')
+	express = require('express'),
+	jsostores = require('./lib/store')
   ;
 
 var 
@@ -27,7 +28,7 @@ var feideconnect = new FeideConnect({
 		request: ["userinfo"]
 	}
 
-});
+}, new jsostores.MongoStore() );
 
 var facebook = new Facebook({
 
@@ -64,67 +65,70 @@ app.use(app.router);
 app.get('/dump', function(req, res){
 	
 
-	var token1 = facebook.getMiddleware().checkToken(req);
-	var token2 = feideconnect.getMiddleware().checkToken(req);
 
-	var body = 'Dump status.';
+	facebook.getMiddleware().checkToken(req, function(token1) {
 
-	console.log("GOT TOKEN");
-	console.log(token1);
-	console.log(token2);
-
-	if (!req.session.c) req.session.c = 0;
-	req.session.c++;
-
-	if (req._oauth) {
-		body += "\n\n-----\nOAuth object: " + JSON.stringify(req._oauth, undefined, 4);	
-	}
-	if (req.session) {
-		body += "\n\n-----\nSession object: " + JSON.stringify(req.session, undefined, 4);	
-	}
-	if (token1) {
-		body += '\n\n-----\nOauth token expires ' + token1.getExpiresIn() + "\nToken" + JSON.stringify(token1, undefined, 4);	
-	}
-	if (token2) {
-		body += '\n\n-----\nOauth token expires ' + token2.getExpiresIn() + "\nToken" + JSON.stringify(token2, undefined, 4);	
-	}
+		feideconnect.getMiddleware().checkToken(req, function(token2) {
 
 
-	// var redirectHandler = o.getRedirectHandler(req, res);
+			var body = 'Dump status.';
 
-	// OAuth.prototype.getJSON = function(url, options, callback, redirectCallback
-	// o.getJSON("https://core.uwap.org/api/userinfo", {}, function(data) {
-	// 	if (data instanceof Error) {
-	// 		console.log("Error: " + data);
-	// 		return;
-	// 	}
-	// 	console.log("Successfully retrieved data: ", data);
-	// }, redirectHandler);
+			console.log("GOT TOKEN");
+			console.log(token1);
+			console.log(token2);
 
+			if (!req.session.c) req.session.c = 0;
+			req.session.c++;
 
-	facebook.getJSON('https://graph.facebook.com/me/feed', token1, {}, function(data) {
-
-		console.log("DATA facebook", data);
-
-		body += "\n\nFacebook data " + JSON.stringify(data, undefined, 4);
-
-
-		feideconnect.getJSON('https://core.uwap.org/api/groups', token2, {}, function(data) {
-
-			console.log("DATA Feideconnect", data);
-
-			body += "\nFeideConnect data " + JSON.stringify(data, undefined, 4);
-
-			res.setHeader('Content-Type', 'text/plain');
-			res.setHeader('Content-Length', body.length);
-			res.end(body);
+			if (req._oauth) {
+				body += "\n\n-----\nOAuth object: " + JSON.stringify(req._oauth, undefined, 4);	
+			}
+			if (req.session) {
+				body += "\n\n-----\nSession object: " + JSON.stringify(req.session, undefined, 4);	
+			}
+			if (token1) {
+				body += '\n\n-----\nOauth token expires ' + token1.getExpiresIn() + "\nToken" + JSON.stringify(token1, undefined, 4);	
+			}
+			if (token2) {
+				body += '\n\n-----\nOauth token expires ' + token2.getExpiresIn() + "\nToken" + JSON.stringify(token2, undefined, 4);	
+			}
 
 
+			// var redirectHandler = o.getRedirectHandler(req, res);
+
+			// OAuth.prototype.getJSON = function(url, options, callback, redirectCallback
+			// o.getJSON("https://core.uwap.org/api/userinfo", {}, function(data) {
+			// 	if (data instanceof Error) {
+			// 		console.log("Error: " + data);
+			// 		return;
+			// 	}
+			// 	console.log("Successfully retrieved data: ", data);
+			// }, redirectHandler);
+
+
+			facebook.getJSON('https://graph.facebook.com/me/feed', token1, {}, function(data) {
+
+				console.log("DATA facebook", data);
+
+				body += "\n\nFacebook data " + JSON.stringify(data, undefined, 4);
+
+
+				feideconnect.getJSON('https://core.uwap.org/api/groups', token2, {}, function(data) {
+
+					console.log("DATA Feideconnect", data);
+
+					body += "\nFeideConnect data " + JSON.stringify(data, undefined, 4);
+
+					res.setHeader('Content-Type', 'text/plain');
+					res.setHeader('Content-Length', body.length);
+					res.end(body);
+
+
+				});
+
+			});
 		});
-
-
 	});
-
 
 });
 
@@ -137,41 +141,40 @@ app.get('/test', function(req, res){
 
 
 
-	var token1 = facebook.getMiddleware().checkToken(req);
-	var token2 = feideconnect.getMiddleware().checkToken(req);
+	facebook.getMiddleware().checkToken(req, function(token1) {
 
-	console.log("GOT TOKEN");
-	console.log(token1);
-	console.log(token2);
-
-	if (req._oauth) {
-		body += "\n\n-----\nOAuth object: " + JSON.stringify(req._oauth, undefined, 4);	
-	}
-	if (req.session) {
-		body += "\n\n-----\nSession object: " + JSON.stringify(req.session, undefined, 4);	
-	}
-	if (token1) {
-		body += '\n\n-----\nOauth token expires ' + token1.getExpiresIn() + "\nToken" + JSON.stringify(token1, undefined, 4);	
-	}
-	if (token2) {
-		body += '\n\n-----\nOauth token expires ' + token2.getExpiresIn() + "\nToken" + JSON.stringify(token2, undefined, 4);	
-	}
+		feideconnect.getMiddleware().checkToken(req, function(token2) {
 
 
 
-	res.setHeader('Content-Type', 'text/plain');
-	res.setHeader('Content-Length', body.length);
-	res.end(body);
+			console.log("GOT TOKEN");
+			console.log(token1);
+			console.log(token2);
+
+			if (req._oauth) {
+				body += "\n\n-----\nOAuth object: " + JSON.stringify(req._oauth, undefined, 4);	
+			}
+			if (req.session) {
+				body += "\n\n-----\nSession object: " + JSON.stringify(req.session, undefined, 4);	
+			}
+			if (token1) {
+				body += '\n\n-----\nOauth token expires ' + token1.getExpiresIn() + "\nToken" + JSON.stringify(token1, undefined, 4);	
+			}
+			if (token2) {
+				body += '\n\n-----\nOauth token expires ' + token2.getExpiresIn() + "\nToken" + JSON.stringify(token2, undefined, 4);	
+			}
 
 
-	// OAuth.prototype.getJSON = function(url, options, callback, redirectCallback
-	// o.getJSON("https://core.uwap.org/api/userinfo", {}, function(data) {
-	// 	if (data instanceof Error) {
-	// 		console.log("Error: " + data);
-	// 		return;
-	// 	}
-	// 	console.log("Successfully retrieved data: ", data);
-	// }, redirectHandler);
+
+			res.setHeader('Content-Type', 'text/plain');
+			res.setHeader('Content-Length', body.length);
+			res.end(body);
+
+		});
+
+	});
+
+
 
 
 });
