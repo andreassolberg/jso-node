@@ -1,0 +1,27 @@
+{
+	"mongoConfig": {
+		"connect": "demo:xxxxx@paulo.mongohq.com:10058/JSO-node-storage-demo"
+	},
+
+	"facebook": {
+
+		"client_id": "262740470541011",
+		"client_secret": "xxxx",
+		"redirect_uri": "http://localhost:3000/callback/Facebook",
+
+		"scopes": { 
+			"request": ["user_about_me"]
+		}
+	},
+	"feideconnect": {
+
+		"client_id": "c74e2395-3712-4c53-b488-e0108af48952",
+		"client_secret": "xxxx",
+		"redirect_uri": "http://localhost:3000/callback/FeideConnect",
+
+		"scopes": { 
+			"request": ["userinfo"]
+		}
+
+	}
+}
