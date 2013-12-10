@@ -1,6 +1,6 @@
 {
-	"name": "testAuthConnect",
-	"version": "0.1.0",
+	"name": "jso",
+	"version": "0.0.1",
 	"description": "Testing the library to authenticate to Feide Connect",
 	"repository": {
 		"type": "git",
