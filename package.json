@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/andreassolberg/jso-node.git"
 	},
-	"main": "server.js",
+	"main": "lib/jso.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
