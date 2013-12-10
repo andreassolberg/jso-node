@@ -7,7 +7,8 @@ var
   // , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
     OAuth = require('./lib/jso').OAuth,
     Facebook = require('./lib/Facebook').Facebook,
-	express = require('express')
+	express = require('express'),
+	fs = require('fs')
   ;
 
 
@@ -15,6 +16,12 @@ var
   app = express(),
   store = new express.session.MemoryStore()
   ;
+
+
+var configurationFile = './config.json';
+var configuration = JSON.parse(
+    fs.readFileSync(configurationFile)
+);
 
 
 // var o_old = new OAuth({
@@ -35,17 +42,7 @@ var
 // });
 
 
-var o = new Facebook({
-
-	client_id: "262740470541011",
-	client_secret: "ecfe8eb8272306aa96ca1f22b23a03f2",
-	redirect_uri: "http://localhost:3000/callback",
-
-	scopes: { 
-		request: ["user_about_me"]
-	}
-
-});
+var o = new Facebook(configuration.facebook);
 
 
 var sessionConfig = { 

@@ -2,6 +2,9 @@ var
   // , passport = require('passport')
   // , po2 = require('passport-oauth2')
   // , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
+
+  	fs = require('fs'),
+
     OAuth = require('./lib/jso').OAuth,
     Facebook = require('./lib/Facebook').Facebook,
     FeideConnect = require('./lib/FeideConnect').FeideConnect,
@@ -15,31 +18,15 @@ var
   ;
 
 
-var feideconnect = new FeideConnect({
+var configurationFile = './config.json';
+var configuration = JSON.parse(
+    fs.readFileSync(configurationFile)
+);
 
-	client_id: "c74e2395-3712-4c53-b488-e0108af48952",
-	client_secret: "bde08ff3-eee2-4369-9e6b-5e17e2579793",
-	redirect_uri: "http://localhost:3000/callback/FeideConnect",
-	// authorization: "https://core.uwap.org/api/oauth/authorization",
-	// token: "https://core.uwap.org/api/oauth/token",
-	// token: "https://nk2qnlpqohtb.runscope.net",
-	// default_scopes: ["userinfo"],
-	scopes: { 
-		request: ["userinfo"]
-	}
 
-}, new jsostores.MongoStore() );
+var feideconnect = new FeideConnect(configuration.feideconnect, new jsostores.MongoStore(configuration.mongoConfig) );
 
-var facebook = new Facebook({
-
-	client_id: "262740470541011",
-	client_secret: "ecfe8eb8272306aa96ca1f22b23a03f2",
-	redirect_uri: "http://localhost:3000/callback/Facebook",
-
-	scopes: { 
-		request: ["user_about_me"]
-	}
-});
+var facebook = new Facebook(configuration.facebook);
 
 
 var sessionConfig = { 

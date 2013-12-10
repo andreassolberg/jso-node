@@ -5,7 +5,8 @@ var
   // , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
     OAuth = require('./lib/jso').OAuth,
     FeideConnect = require('./lib/FeideConnect').FeideConnect,
-	express = require('express')
+	express = require('express'),
+	fs = require('fs')
   ;
 
 
@@ -14,36 +15,12 @@ var
   store = new express.session.MemoryStore()
   ;
 
+var configurationFile = './config.json';
+var configuration = JSON.parse(
+    fs.readFileSync(configurationFile)
+);
 
-// var o_old = new OAuth({
-
-// 	client_id: "c74e2395-3712-4c53-b488-e0108af48952",
-// 	client_secret: "bde08ff3-eee2-4369-9e6b-5e17e2579793",
-// 	redirect_uri: "http://0.0.0.0:3000/callback",
-
-// 	authorization: "https://core.uwap.org/api/oauth/authorization",
-// 	token: "https://core.uwap.org/api/oauth/token",
-// 	// token: "https://nk2qnlpqohtb.runscope.net",
-	
-// 	// default_scopes: ["userinfo"],
-// 	scopes: { 
-// 		request: ["userinfo"]
-// 	}
-
-// });
-
-
-var o = new FeideConnect({
-
-	client_id: "c74e2395-3712-4c53-b488-e0108af48952",
-	client_secret: "bde08ff3-eee2-4369-9e6b-5e17e2579793",
-	redirect_uri: "http://0.0.0.0:3000/callback",
-
-	scopes: { 
-		request: ["userinfo"]
-	}
-
-});
+var o = new FeideConnect(configuration.feideconnect);
 
 
 var sessionConfig = { 
