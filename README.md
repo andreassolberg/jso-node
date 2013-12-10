@@ -9,9 +9,9 @@ If you would like to use OAuth 2.0 Consumer in the browser only, with the Implic
 
 ## News
 
-December 10th: I'm working to get this up running. The code is not mature yet, but should work. Stay tuned for updates.
+December 10th 2013: I'm working to get this up running. The code is not mature yet, but should work. Stay tuned for updates.
 
-
+## Author
 
 This library was written by Andreas Åkre Solberg (UNINETT AS) in March 2012.
 
