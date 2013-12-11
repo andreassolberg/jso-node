@@ -1,10 +1,12 @@
 
 var 
-  // , passport = require('passport')
-  // , po2 = require('passport-oauth2')
-  // , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
-    OAuth = require('./lib/jso').OAuth,
-    FeideConnect = require('./lib/FeideConnect').FeideConnect,
+	// , passport = require('passport')
+	// , po2 = require('passport-oauth2')
+	// , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
+
+	jso = require('./lib/jso'),
+	// OAuth = require('./lib/jso').OAuth,
+	// FeideConnect = require('./lib/FeideConnect').FeideConnect,
 	express = require('express'),
 	fs = require('fs')
   ;
@@ -20,7 +22,7 @@ var configuration = JSON.parse(
     fs.readFileSync(configurationFile)
 );
 
-var o = new FeideConnect(configuration.feideconnect);
+var o = new jso.FeideConnect(configuration.feideconnect);
 
 
 var sessionConfig = { 
@@ -39,14 +41,14 @@ var sessionConfig = {
 app.use(express.cookieParser());
 app.use(express.session(sessionConfig));
 
-app.use('/callback', o.getAuthenticationMiddleware().callback().authenticate() );
+app.use('/callback', o.getMiddleware().callback().authenticate() );
 
 // app.use('/', o.getAuthenticationMiddleware() );
-app.use('/test', o.getAuthenticationMiddleware()
+app.use('/test', o.getMiddleware()
 	.requireScopes(['userinfo'])
 
 );
-app.use('/', o.getAuthenticationMiddleware());
+app.use('/', o.getMiddleware());
 app.use(app.router);
 
 
@@ -62,33 +64,36 @@ app.get('/dump', function(req, res){
 	}
 
 
-	var token = o.getAuthenticationMiddleware().checkToken(req);
 
-	console.log("GOT TOKEN", token, req.session._oauth);
+	o.getMiddleware().checkToken(req, function(token) {
 
-	if (token) {
-		body += 'Oauth token expires ' + token.getExpiresIn() + "\nToken" + JSON.stringify(token, undefined, 4);	
-	}
 
-    if(typeof req.cookies['connect.sid'] !== 'undefined'){
-        console.log(req.cookies['connect.sid']);
-        body += JSON.stringify("Session cookie " + req.cookies['connect.sid'], undefined, 4);	
-    }
+		console.log("GOT TOKEN", token, req.session._oauth);
 
-	var redirectHandler = o.getRedirectHandler(req, res);
+		if (token) {
+			body += 'Oauth token expires ' + token.getExpiresIn() + "\nToken" + JSON.stringify(token, undefined, 4);	
+		}
 
-	// OAuth.prototype.getJSON = function(url, options, callback, redirectCallback
-	// o.getJSON("https://core.uwap.org/api/userinfo", {}, function(data) {
-	// 	if (data instanceof Error) {
-	// 		console.log("Error: " + data);
-	// 		return;
-	// 	}
-	// 	console.log("Successfully retrieved data: ", data);
-	// }, redirectHandler);
+	    if(typeof req.cookies['connect.sid'] !== 'undefined'){
+	        console.log(req.cookies['connect.sid']);
+	        body += JSON.stringify("Session cookie " + req.cookies['connect.sid'], undefined, 4);	
+	    }
 
-	res.setHeader('Content-Type', 'text/plain');
-	res.setHeader('Content-Length', body.length);
-	res.end(body);
+		var redirectHandler = o.getRedirectHandler(req, res);
+
+		// OAuth.prototype.getJSON = function(url, options, callback, redirectCallback
+		// o.getJSON("https://core.uwap.org/api/userinfo", {}, function(data) {
+		// 	if (data instanceof Error) {
+		// 		console.log("Error: " + data);
+		// 		return;
+		// 	}
+		// 	console.log("Successfully retrieved data: ", data);
+		// }, redirectHandler);
+
+		res.setHeader('Content-Type', 'text/plain');
+		res.setHeader('Content-Length', body.length);
+		res.end(body);
+	});
 });
 
 
