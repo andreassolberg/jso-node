@@ -17,7 +17,7 @@ var
   store = new express.session.MemoryStore()
   ;
 
-var configurationFile = './config.json';
+var configurationFile = './config.js';
 var configuration = JSON.parse(
     fs.readFileSync(configurationFile)
 );
@@ -143,8 +143,8 @@ app.get('/hello.txt', function(req, res){
 // app.get('/login', passport.authenticate('local', { successRedirect: '/',
 //                                                     failureRedirect: '/login' }));
 
-
-app.listen(3000);
-console.log('Listening on port 3000');
+var port = 80;
+app.listen(port);
+console.log('Listening on port ' + port);
 
 
