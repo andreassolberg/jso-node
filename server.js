@@ -4,6 +4,8 @@ var
 	// , po2 = require('passport-oauth2')
 	// , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
 
+	ConfigurationManager = require('./lib/ConfigurationManager'),
+
 	jso = require('./lib/jso'),
 	// OAuth = require('./lib/jso').OAuth,
 	// FeideConnect = require('./lib/FeideConnect').FeideConnect,
@@ -21,6 +23,14 @@ var configurationFile = './config.js';
 var configuration = JSON.parse(
     fs.readFileSync(configurationFile)
 );
+
+
+
+var cm = new ConfigurationManager();
+
+
+var config = cm.get('feideconncet');
+
 
 var o = new jso.FeideConnect(configuration.feideconnect);
 
@@ -93,7 +103,9 @@ app.get('/dump', function(req, res){
 		res.setHeader('Content-Type', 'text/plain');
 		res.setHeader('Content-Length', body.length);
 		res.end(body);
+
 	});
+
 });
 
 
@@ -143,7 +155,7 @@ app.get('/hello.txt', function(req, res){
 // app.get('/login', passport.authenticate('local', { successRedirect: '/',
 //                                                     failureRedirect: '/login' }));
 
-var port = 80;
+var port = 9001;
 app.listen(port);
 console.log('Listening on port ' + port);
 
