@@ -4,13 +4,12 @@ var
 	// , po2 = require('passport-oauth2')
 	// , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
 
-	ConfigurationManager = require('./lib/ConfigurationManager'),
+	ConfigurationManager = require('./lib/ConfigurationManager').ConfigurationManager,
 
 	jso = require('./lib/jso'),
 	// OAuth = require('./lib/jso').OAuth,
 	// FeideConnect = require('./lib/FeideConnect').FeideConnect,
-	express = require('express'),
-	fs = require('fs')
+	express = require('express')
   ;
 
 
@@ -19,20 +18,12 @@ var
   store = new express.session.MemoryStore()
   ;
 
-var configurationFile = './config.js';
-var configuration = JSON.parse(
-    fs.readFileSync(configurationFile)
-);
-
-
 
 var cm = new ConfigurationManager();
+var config = cm.get('feideconnect');
 
 
-var config = cm.get('feideconncet');
-
-
-var o = new jso.FeideConnect(configuration.feideconnect);
+var o = new jso.FeideConnect(config);
 
 
 var sessionConfig = { 
@@ -58,8 +49,12 @@ app.use('/test', o.getMiddleware()
 	.requireScopes(['userinfo'])
 
 );
+
+app.use('/_autoconfigure/', express.static(__dirname + '/webapp/'));
+
 app.use('/', o.getMiddleware());
 app.use(app.router);
+
 
 
 
