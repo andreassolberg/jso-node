@@ -56,6 +56,19 @@ app.use('/', o.getMiddleware());
 app.use(app.router);
 
 
+app.get('/_autoconfigure-api/setup', function(req, res) {
+
+	var body = ;
+
+	var bodystr = JSON.stringify(body);
+	res.setHeader('Content-Type', 'application/json');
+	res.setHeader('Content-Length', bodystr.length);
+	res.end(bodystr);
+
+});
+
+
+
 
 
 app.get('/dump', function(req, res){
