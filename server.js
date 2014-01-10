@@ -53,12 +53,24 @@ app.use('/test', o.getMiddleware()
 app.use('/_autoconfigure/', express.static(__dirname + '/webapp/'));
 
 app.use('/', o.getMiddleware());
+app.use(express.bodyParser());
+
 app.use(app.router);
 
 
 app.get('/_autoconfigure-api/setup', function(req, res) {
 
-	var body = ;
+	var body = {
+
+		"client_id": "c74e2395-3712-4c53-b488-e0108af48952",
+		"client_secret": "bde08ff3-eee2-4369-9e6b-5e17e2579793",
+		"redirect_uri": "http://localhost:3000/callback/FeideConnect",
+
+		"scopes": { 
+			"request": ["userinfo"]
+		}
+
+	};
 
 	var bodystr = JSON.stringify(body);
 	res.setHeader('Content-Type', 'application/json');
@@ -67,6 +79,17 @@ app.get('/_autoconfigure-api/setup', function(req, res) {
 
 });
 
+
+app.post('/_autoconfigure-api/register', function(req, res) {
+
+	console.log("Retrieving metadata ", req.body);
+
+	var body = {"msg": "ok"};
+	var bodystr = JSON.stringify(body);
+	res.setHeader('Content-Type', 'application/json');
+	res.setHeader('Content-Length', bodystr.length);
+	res.end(bodystr);
+});
 
 
 

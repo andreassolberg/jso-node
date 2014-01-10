@@ -1,7 +1,7 @@
 define(function(require) {
 
 
-	var environment = 'http://dev.app.brige.uninett.no';
+	var environment = 'http://dev.app.bridge.uninett.no';
 	var $ = jQuery;
 
 	$(document).ready(function() {
@@ -14,7 +14,6 @@ define(function(require) {
 
 			$.getJSON('/_autoconfigure-api/setup', function(metadata) {
 
-
 				// Perform a request for registering client to widget.
 				var widget = document.getElementById("uwap_autoconnect_widget").contentWindow;
 				// console.log($("#uwap_autoconnect_widget"));
@@ -24,7 +23,6 @@ define(function(require) {
 				}, environment);
 
 			});
-
 
 		} 
 
@@ -51,10 +49,9 @@ define(function(require) {
 
 			$.ajax({
 				type: "POST",
-				processData: false,
 				dataType: "json",
-				mimeType: "text/json",
-				url: "<?php echo $uwap['url_api']; ?>",
+				contentType: "application/json; charset=utf-8",
+				url: '/_autoconfigure-api/register',
 				data: JSON.stringify({"metadata": meta}),
 				success: function(msg) {
 
@@ -68,7 +65,6 @@ define(function(require) {
 
 
 		window.addEventListener("message", function(event) {
-
 
 			/**
 			 * When receving a message that the widget is ready, then send a message back with metadata.
