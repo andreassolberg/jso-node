@@ -1,0 +1,20 @@
+
+
+body .onlyAdmin 				{ display: none; }
+body.userAdmin .onlyAdmin 		{ display: inline; }
+body.userAdmin div.onlyAdmin 	{ display: block; }
+body.userAdmin p.onlyAdmin 		{ display: block; }
+
+
+
+body .onlyAuth 						{ display: none; }
+body.userAuthenticated .onlyAuth 	{ display: inline; }
+body.userAuthenticated div.onlyAuth { display: block; }
+body.userAuthenticated p.onlyAuth 	{ display: block; }
+
+
+body .onlyNotAuth 						{ display: inline; }
+body.userAuthenticated .onlyNotAuth 	{ display: none; }
+body.userAuthenticated div.onlyNotAuth 	{ display: block; }
+body.userAuthenticated p.onlyNotAuth 	{ display: block; }
+

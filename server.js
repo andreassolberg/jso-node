@@ -4,7 +4,7 @@ var
 	// , po2 = require('passport-oauth2')
 	// , OAuth2Strategy = require('passport-oauth2').OAuth2Strategy
 
-	ConfigurationManager = require('./lib/ConfigurationManager').ConfigurationManager,
+	configManagers = require('./lib/ConfigurationManager'),
 
 	jso = require('./lib/jso'),
 	// OAuth = require('./lib/jso').OAuth,
@@ -18,13 +18,21 @@ var
   store = new express.session.MemoryStore()
   ;
 
+var providerID = 'feideconnect';
+var cm = new configManagers.ConfigurationManager(providerID);
+// var cm = new configManagers.SimpleConfigurationManager({
+// 	"authorization": "https://core.uwap.org/api/oauth/authorization",
+// 	"token": "https://core.uwap.org/api/oauth/token",
+// 	"client_id": "c74e2395-3712-4c53-b488-e0108af48952",
+// 	"client_secret": "bde08ff3-eee2-4369-9e6b-5e17e2579793",
+// 	"redirect_uri": "http://localhost:3000/callback/FeideConnect",
+// 	"scopes": { 
+// 		"request": ["userinfo"]
+// 	}
+// });
 
-var cm = new ConfigurationManager();
-var config = cm.get('feideconnect');
 
-
-var o = new jso.FeideConnect(config);
-
+var o = new jso.FeideConnect(cm);
 
 var sessionConfig = { 
 	// path: '/', 
@@ -39,57 +47,24 @@ var sessionConfig = {
 		// secure: true
 	}
 };
+
 app.use(express.cookieParser());
 app.use(express.session(sessionConfig));
 
-app.use('/callback', o.getMiddleware().callback().authenticate() );
 
-// app.use('/', o.getAuthenticationMiddleware() );
-app.use('/test', o.getMiddleware()
-	.requireScopes(['userinfo'])
 
+o.setupMiddleware('/_feideconnect', app);
+app.use('/test', 
+	o.getMiddleware().requireScopes(['userinfo'])
 );
 
-app.use('/_autoconfigure/', express.static(__dirname + '/webapp/'));
 
-app.use('/', o.getMiddleware());
 app.use(express.bodyParser());
-
 app.use(app.router);
 
 
-app.get('/_autoconfigure-api/setup', function(req, res) {
-
-	var body = {
-
-		"client_id": "c74e2395-3712-4c53-b488-e0108af48952",
-		"client_secret": "bde08ff3-eee2-4369-9e6b-5e17e2579793",
-		"redirect_uri": "http://localhost:3000/callback/FeideConnect",
-
-		"scopes": { 
-			"request": ["userinfo"]
-		}
-
-	};
-
-	var bodystr = JSON.stringify(body);
-	res.setHeader('Content-Type', 'application/json');
-	res.setHeader('Content-Length', bodystr.length);
-	res.end(bodystr);
-
-});
 
 
-app.post('/_autoconfigure-api/register', function(req, res) {
-
-	console.log("Retrieving metadata ", req.body);
-
-	var body = {"msg": "ok"};
-	var bodystr = JSON.stringify(body);
-	res.setHeader('Content-Type', 'application/json');
-	res.setHeader('Content-Length', bodystr.length);
-	res.end(bodystr);
-});
 
 
 
@@ -132,7 +107,7 @@ app.get('/dump', function(req, res){
 		// }, redirectHandler);
 
 		res.setHeader('Content-Type', 'text/plain');
-		res.setHeader('Content-Length', body.length);
+		// res.setHeader('Content-Length', body.length);
 		res.end(body);
 
 	});
@@ -160,7 +135,7 @@ app.get('/test', function(req, res){
 	// }, redirectHandler);
 
 	res.setHeader('Content-Type', 'text/plain');
-	res.setHeader('Content-Length', body.length);
+	// res.setHeader('Content-Length', body.length);
 	res.end(body);
 });
 
@@ -178,7 +153,7 @@ app.get('/test', function(req, res){
 app.get('/hello.txt', function(req, res){
   var body = 'Hello World';
   res.setHeader('Content-Type', 'text/plain');
-  res.setHeader('Content-Length', body.length);
+  // res.setHeader('Content-Length', body.length);
   res.end(body);
 });
 
@@ -186,7 +161,7 @@ app.get('/hello.txt', function(req, res){
 // app.get('/login', passport.authenticate('local', { successRedirect: '/',
 //                                                     failureRedirect: '/login' }));
 
-var port = 9001;
+var port = 3000;
 app.listen(port);
 console.log('Listening on port ' + port);
 

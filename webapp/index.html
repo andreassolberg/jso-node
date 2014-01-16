@@ -11,10 +11,10 @@
 
 	<!-- Bootstrap core CSS -->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
 
 	<!-- Custom styles for this template -->
 	<link href="uninett-theme/css/uninett.css" rel="stylesheet">
-
 
 	<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> 
 	<script src="js/bootstrap.min.js"></script>
@@ -86,11 +86,51 @@
 					<h1>Configure this application with Feide Connect</h1>
 
 
-					<p>Register your application in the configuration widget below in order to continue.</p>
+					<!-- <p>Register your application in the configuration widget below in order to continue.</p> -->
 
-					<iframe id="uwap_autoconnect_widget" src="http://dev.app.bridge.uninett.no/autoconnect.html" 
-						style="border-radius: 10px; border: 1px solid #aaa; width: 100%; height: 680px"></iframe>
+					<div id="mainContainer"></div>
 
+
+					<div id="alreadyRegisteredContainer" style="display: none">
+
+						<p>
+							<span class="glyphicon glyphicon-check uninett-fontColor-red"></span>
+							Your provider is already configured.</p>
+
+						<p  class="onlyAuth">
+							You are successfully logged in as 
+							<span class="glyphicon glyphicon-user uninett-fontColor-red"></span> <span class="dataUsername"></span>
+						</p>
+
+						<p class="onlyAdmin">You are registered as the owner of this application, 
+							and have full permissions to update the configuration on the <a href="https://dev.uwap.org">Feide Connect dashboard</a>
+						</p>
+
+						<p style="margin-top: 2em">
+							<a id="testLogin" class="btn btn-success onlyNotAuth" href="/_autoconfigure-login/">
+								<span class="glyphicon glyphicon-play-circle"></span>
+								Test login</a>
+							<button id="actResetConfig" class="btn btn-danger onlyAdmin">
+								<span class="glyphicon glyphicon-remove-circle"></span>
+								Reset configuration</button>
+							<button id="actDevDashboard" class="btn btn-primary onlyAdmin">
+							<span class="glyphicon glyphicon-cog"></span>
+								Edit configuration using Developer Dashboard</button>
+
+						</p>	
+						
+					</div>
+
+					<div id="manualContainer" style="display: none">
+						
+						<p>Your provider does not support autoconfiguration. Please register your application manually.</p>
+
+						<p><a href="https://dev.uwap.org" class="btn btn-primary">
+							<span class="glyphicon glylphicon-cog"></span> 
+							Developer Dasboard</a></p>
+
+					</div>
+					
 				</div>
 			</div>
 		</div>
@@ -121,44 +161,6 @@
 	</div>
 	<!-- /container --> 
 
-
-	<div id="modalCreateNew" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Lag nytt dokument</h4>
-				</div>
-				<div class="modal-body">
-
-					<form role="form">
-						<div class="form-group">
-							<label for="documentName">Navn på dokument</label>
-							<input type="email" class="form-control" id="documentName" placeholder="Navn på dokument">
-						</div>
-						<div class="form-group">
-							<label for="documentGroup">Dele med gruppe</label>
-							<select id="documentGroup" class="selectGroup" class="form-control">...</select>
-
-							</select>
-						</div>
-						<div class="checkbox">
-							<label for="documentPublic">
-								<input id="documentPublic" type="checkbox"> Tilgjengelig åpent for alle (leserettigheter)
-							</label>
-						</div>
-					</form>
-
-
-
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
-					<button type="button" id="btnStoreNewDocument" class="btn btn-primary">Opprett dokument</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
 
 </body>
 </html>
