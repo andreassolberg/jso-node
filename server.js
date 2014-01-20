@@ -50,16 +50,24 @@ var sessionConfig = {
 
 app.use(express.cookieParser());
 app.use(express.session(sessionConfig));
+app.use(express.bodyParser());
 
+
+// app.use('/callback', o.getMiddleware().callback().authenticate() );
+app.use('/test', o.getMiddleware().requireScopes(['userinfo']) );
+// app.use('/_autoconfigure/', express.static(__dirname + '/webapp/') );
+// app.use('/', o.getMiddleware() );
 
 
 o.setupMiddleware('/_feideconnect', app);
-app.use('/test', 
-	o.getMiddleware().requireScopes(['userinfo'])
-);
 
 
-app.use(express.bodyParser());
+
+
+
+
+
+
 app.use(app.router);
 
 

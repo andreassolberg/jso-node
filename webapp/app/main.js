@@ -189,7 +189,7 @@ define(function(require) {
 				type: "POST",
 				dataType: "json",
 				contentType: "application/json; charset=utf-8",
-				url: '/_autoconfigure-api/register',
+				url: '../autoconfigure-api/register',
 				data: JSON.stringify(metadata),
 				success: function(msg) {
 
