@@ -32,9 +32,3 @@ The software is dual-licenced with *The GNU Lesser General Public License, versi
 
 
 
-
-
-,
-	"dependencies-dev": {
-		"mongojs": "*"
-	}
